@@ -10,7 +10,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 option(LICENSE_EMBED_BUILD_EXAMPLES "Build the bundled example consumer project" OFF)
-option(LICENSE_EMBED_BUILD_TESTS    "Build the bundled CTest harness"             OFF)
+option(LICENSE_EMBED_BUILD_TESTS    "Build the bundled CTest harness"            OFF)
 
 set(LICENSE_EMBED_MODULE_INSTALL_DIR
     "${CMAKE_INSTALL_DATAROOTDIR}/cmake/LicenseEmbed"
