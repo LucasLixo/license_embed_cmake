@@ -1,6 +1,6 @@
 # license_embed_cmake
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![CMake](https://img.shields.io/badge/CMake-3.20%2B-blue.svg)](https://cmake.org)
 
 A pure-CMake utility module for embedding third-party dependency license files
@@ -316,4 +316,6 @@ identifier list at [spdx.org/licenses](https://spdx.org/licenses/).
 
 ## License
 
-[MIT](LICENSE.txt) — Copyright (c) 2026 LucasLixo
+Shield: [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
