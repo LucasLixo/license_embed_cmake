@@ -9,18 +9,24 @@
 #   license_embed_enable_build()
 #   license_embed_enable_copy_now()
 #   license_embed_enable_spdx([FORMAT <JSON|XML|BOTH>])
-#   license_embed_get_destinations(<out-var> MODE <install|build|configure>)
+#   license_embed_enable_android()
+#   license_embed_get_destinations(<out-var> MODE <install|build|configure|android>)
 #
 # Destination directories (all overridable via cache or -D):
 #   LICENSE_EMBED_INSTALL_LICENSES_DIR  install root for license files
 #   LICENSE_EMBED_INSTALL_SPDX_DIR      install root for SPDX documents
 #   LICENSE_EMBED_BUILD_LICENSES_DIR    build-tree root for license files
 #   LICENSE_EMBED_BUILD_SPDX_DIR        build-tree root for SPDX documents
+#   LICENSE_EMBED_ANDROID_ASSETS_DIR    Android assets/license directory
+#
+# Options:
+#   LICENSE_EMBED_ANDROID               enable/disable Android integration (ON)
 #
 # File layout per mode:
 #   build / configure  ${LICENSE_EMBED_BUILD_LICENSES_DIR}/<NAME>/LICENSE
 #   install            ${LICENSE_EMBED_INSTALL_LICENSES_DIR}/<NAME>/LICENSE
 #   SPDX build         ${LICENSE_EMBED_BUILD_SPDX_DIR}/<project>.spdx.{json,xml}
+#   android            ${LICENSE_EMBED_ANDROID_ASSETS_DIR}/<NAME>/LICENSE
 #   SPDX install       ${LICENSE_EMBED_INSTALL_SPDX_DIR}/<project>.spdx.{json,xml}
 #
 # Cross-call state is held in GLOBAL properties so the API works from any
@@ -50,6 +56,21 @@ set(LICENSE_EMBED_BUILD_LICENSES_DIR
 set(LICENSE_EMBED_BUILD_SPDX_DIR
     "${CMAKE_BINARY_DIR}/spdx"
     CACHE PATH "Build-tree destination for SPDX SBOM documents.")
+
+option(LICENSE_EMBED_ANDROID
+    "Copy licenses into the Android assets/license directory when targeting Android." ON)
+set(LICENSE_EMBED_ANDROID_ASSETS_DIR
+    "${CMAKE_BINARY_DIR}/assets/license"
+    CACHE PATH "Android assets/license directory (e.g. <app>/src/main/assets/license).")
+
+# True when cross-compiling for Android (NDK toolchain sets ANDROID / system name).
+function(_license_embed_is_android OUT_VAR)
+    if(ANDROID OR CMAKE_SYSTEM_NAME STREQUAL "Android")
+        set(${OUT_VAR} TRUE PARENT_SCOPE)
+    else()
+        set(${OUT_VAR} FALSE PARENT_SCOPE)
+    endif()
+endfunction()
 
 # Curated subset of common SPDX short identifiers. Unknown ids are accepted
 # (with a WARNING) so that the module never blocks a valid expression that
@@ -324,7 +345,35 @@ macro(license_embed_enable_spdx)
     set_property(GLOBAL PROPERTY LICENSE_EMBED_SPDX_ENABLED TRUE)
 endmacro()
 
-# license_embed_get_destinations(<out-var> MODE <install|build|configure>)
+# license_embed_enable_android()
+# When targeting Android (detected via ANDROID / CMAKE_SYSTEM_NAME) and
+# LICENSE_EMBED_ANDROID is ON, copies every registered license at configure
+# time to ${LICENSE_EMBED_ANDROID_ASSETS_DIR}/<NAME>/LICENSE. No-op otherwise.
+macro(license_embed_enable_android)
+    _license_embed_is_android(_le_is_android)
+    if(NOT LICENSE_EMBED_ANDROID)
+        message(STATUS "license_embed_enable_android: disabled (LICENSE_EMBED_ANDROID=OFF).")
+    elseif(NOT _le_is_android)
+        message(STATUS "license_embed_enable_android: not targeting Android; skipping.")
+    else()
+        get_property(_le_entries GLOBAL PROPERTY LICENSE_EMBED_ENTRIES)
+        if(NOT _le_entries)
+            message(WARNING
+                "license_embed_enable_android: no entries registered; nothing to copy.")
+        endif()
+        foreach(_row IN LISTS _le_entries)
+            string(REPLACE "|" ";" _parts "${_row}")
+            list(GET _parts 0 _name)
+            list(GET _parts 2 _path)
+            set(_dest_dir "${LICENSE_EMBED_ANDROID_ASSETS_DIR}/${_name}")
+            file(MAKE_DIRECTORY "${_dest_dir}")
+            configure_file("${_path}" "${_dest_dir}/LICENSE" COPYONLY)
+        endforeach()
+        set_property(GLOBAL PROPERTY LICENSE_EMBED_ANDROID_ENABLED TRUE)
+    endif()
+endmacro()
+
+# license_embed_get_destinations(<out-var> MODE <install|build|configure|android>)
 # Returns the list of absolute paths where registered licenses would land for
 # the given mode. "configure" maps to the same directory as "build" (both use
 # LICENSE_EMBED_BUILD_LICENSES_DIR).
@@ -333,14 +382,16 @@ function(license_embed_get_destinations OUT_VAR)
     if(NOT DEFINED LE_GD_MODE OR LE_GD_MODE STREQUAL "")
         message(FATAL_ERROR "license_embed_get_destinations: MODE is required.")
     endif()
-    if(NOT LE_GD_MODE MATCHES "^(install|build|configure)$")
+    if(NOT LE_GD_MODE MATCHES "^(install|build|configure|android)$")
         message(FATAL_ERROR
             "license_embed_get_destinations: unknown MODE '${LE_GD_MODE}'. "
-            "Use install, build, or configure.")
+            "Use install, build, configure, or android.")
     endif()
 
     if(LE_GD_MODE STREQUAL "install")
         set(_base "${LICENSE_EMBED_INSTALL_LICENSES_DIR}")
+    elseif(LE_GD_MODE STREQUAL "android")
+        set(_base "${LICENSE_EMBED_ANDROID_ASSETS_DIR}")
     else()
         set(_base "${LICENSE_EMBED_BUILD_LICENSES_DIR}")
     endif()

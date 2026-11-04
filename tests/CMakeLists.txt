@@ -172,3 +172,32 @@ add_test(NAME license_embed.custom_build_dir.check
         -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_exists.cmake")
 set_tests_properties(license_embed.custom_build_dir.check PROPERTIES
     DEPENDS license_embed.custom-dir.build)
+
+# ---------------------------------------------------------------------------
+# Scenario: Android — assets/license populated when ANDROID is set.
+# ---------------------------------------------------------------------------
+set(_LE_ANDROID_BUILD "${CMAKE_BINARY_DIR}/tests/android-build")
+set(_LE_ANDROID_OFF_BUILD "${CMAKE_BINARY_DIR}/tests/android-off-build")
+
+add_test(NAME license_embed.android.configure
+    COMMAND ${CMAKE_COMMAND} -S "${_LE_DEMO_SRC}" -B "${_LE_ANDROID_BUILD}" -DANDROID=ON)
+
+add_test(NAME license_embed.android.check
+    COMMAND ${CMAKE_COMMAND}
+        -DEXPECTED=${_LE_ANDROID_BUILD}/assets/license/zlib/LICENSE
+        -DEXPECTED2=${_LE_ANDROID_BUILD}/assets/license/fmt/LICENSE
+        -DEXPECTED3=${_LE_ANDROID_BUILD}/assets/license/boost-asio/LICENSE
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_exists.cmake")
+set_tests_properties(license_embed.android.check PROPERTIES
+    DEPENDS license_embed.android.configure)
+
+add_test(NAME license_embed.android_off.configure
+    COMMAND ${CMAKE_COMMAND} -S "${_LE_DEMO_SRC}" -B "${_LE_ANDROID_OFF_BUILD}"
+        -DANDROID=ON -DLICENSE_EMBED_ANDROID=OFF)
+
+add_test(NAME license_embed.android_off.check_absent
+    COMMAND ${CMAKE_COMMAND}
+        -DEXPECTED=${_LE_ANDROID_OFF_BUILD}/assets/license/zlib/LICENSE
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_not_exists.cmake")
+set_tests_properties(license_embed.android_off.check_absent PROPERTIES
+    DEPENDS license_embed.android_off.configure)

@@ -230,7 +230,37 @@ license_embed_enable_install()
 
 ---
 
-### `license_embed_get_destinations(<out-var> MODE <install|build|configure>)`
+### `license_embed_enable_android()`
+
+Android integration. When the build targets Android (detected through the
+`ANDROID` variable or `CMAKE_SYSTEM_NAME` being `Android`, as set by the NDK
+toolchain) and `LICENSE_EMBED_ANDROID` is `ON`, copies all registered licenses
+at **configure time** to:
+
+```
+${LICENSE_EMBED_ANDROID_ASSETS_DIR}/<NAME>/LICENSE
+```
+
+On any other platform, or when `LICENSE_EMBED_ANDROID=OFF`, the macro does
+nothing, so it is safe to leave in cross-platform projects. Point
+`LICENSE_EMBED_ANDROID_ASSETS_DIR` at your Gradle module's assets folder so the
+files are packaged into the APK/AAB.
+
+```cmake
+license_embed_enable_android()
+```
+
+```sh
+# Enable (default) and send licenses to the Gradle assets folder
+cmake -DLICENSE_EMBED_ANDROID_ASSETS_DIR=/path/app/src/main/assets/license ...
+
+# Disable the Android integration
+cmake -DLICENSE_EMBED_ANDROID=OFF ...
+```
+
+---
+
+### `license_embed_get_destinations(<out-var> MODE <install|build|configure|android>)`
 
 Populates `<out-var>` with the list of absolute paths where the registered
 licenses would land for the given mode. Useful for integrating with custom
@@ -239,7 +269,7 @@ install rules, manifests, or packaging scripts.
 | Argument | Required | Description |
 |---|---|---|
 | `<out-var>` | yes | CMake variable that receives the result list. |
-| `MODE` | yes | `install` uses `LICENSE_EMBED_INSTALL_LICENSES_DIR`; `build` and `configure` both use `LICENSE_EMBED_BUILD_LICENSES_DIR`. |
+| `MODE` | yes | `install` uses `LICENSE_EMBED_INSTALL_LICENSES_DIR`; `build` and `configure` both use `LICENSE_EMBED_BUILD_LICENSES_DIR`; `android` uses `LICENSE_EMBED_ANDROID_ASSETS_DIR`. |
 
 ```cmake
 license_embed_get_destinations(MY_INSTALL_PATHS MODE install)
@@ -265,6 +295,8 @@ All variables can be overridden via `-D` on the CMake command line or by
 | `LICENSE_EMBED_INSTALL_SPDX_DIR` | PATH | `${CMAKE_INSTALL_DATAROOTDIR}/spdx` | Install root for SPDX SBOM documents. |
 | `LICENSE_EMBED_BUILD_LICENSES_DIR` | PATH | `${CMAKE_BINARY_DIR}/licenses` | Build-tree root for per-dependency license files. |
 | `LICENSE_EMBED_BUILD_SPDX_DIR` | PATH | `${CMAKE_BINARY_DIR}/spdx` | Build-tree root for SPDX SBOM documents. |
+| `LICENSE_EMBED_ANDROID` | BOOL | `ON` | Enable/disable the Android integration (`license_embed_enable_android()`). |
+| `LICENSE_EMBED_ANDROID_ASSETS_DIR` | PATH | `${CMAKE_BINARY_DIR}/assets/license` | Android `assets/license` directory that receives the license files. |
 | `LICENSE_EMBED_INSTALL_COMPONENT` | STRING | `LicenseEmbed` | CPack / `cmake --install --component` name for all license artifacts. |
 
 Example — place licenses next to the binary:
