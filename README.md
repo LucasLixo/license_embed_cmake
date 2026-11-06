@@ -85,9 +85,9 @@ After `cmake --install`:
 <prefix>/
   bin/myapp
   share/licenses/
-    zlib/LICENSE
-    fmt/LICENSE
-    boost-asio/LICENSE
+    zlib/LICENSE.txt
+    fmt/LICENSE.txt
+    boost-asio/LICENSE.txt
   share/spdx/
     myapp.spdx.json
     myapp.spdx.xml
@@ -274,9 +274,9 @@ install rules, manifests, or packaging scripts.
 ```cmake
 license_embed_get_destinations(MY_INSTALL_PATHS MODE install)
 # MY_INSTALL_PATHS == [
-#   /usr/share/licenses/zlib/LICENSE
-#   /usr/share/licenses/fmt/LICENSE
-#   /usr/share/licenses/boost-asio/LICENSE
+#   /usr/share/licenses/zlib/LICENSE.txt
+#   /usr/share/licenses/fmt/LICENSE.txt
+#   /usr/share/licenses/boost-asio/LICENSE.txt
 # ]
 
 license_embed_get_destinations(MY_BUILD_PATHS MODE build)

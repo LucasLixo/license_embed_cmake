@@ -36,7 +36,7 @@ if(NOT _actual_count EQUAL _expected_count)
 endif()
 
 foreach(_name IN LISTS _expected_list)
-    set(_expected_path "${EXPECTED_BASE}/${_name}/LICENSE")
+    set(_expected_path "${EXPECTED_BASE}/${_name}/LICENSE.txt")
     list(FIND _dests "${_expected_path}" _idx)
     if(_idx EQUAL -1)
         message(FATAL_ERROR

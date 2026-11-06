@@ -44,9 +44,9 @@ _le_scenario(demo)
 # Check build-tree mirror artifacts.
 add_test(NAME license_embed.check_build_tree
     COMMAND ${CMAKE_COMMAND}
-        -DEXPECTED=${_LE_DEMO_BUILD}/licenses/zlib/LICENSE
-        -DEXPECTED2=${_LE_DEMO_BUILD}/licenses/fmt/LICENSE
-        -DEXPECTED3=${_LE_DEMO_BUILD}/licenses/boost-asio/LICENSE
+        -DEXPECTED=${_LE_DEMO_BUILD}/licenses/zlib/LICENSE.txt
+        -DEXPECTED2=${_LE_DEMO_BUILD}/licenses/fmt/LICENSE.txt
+        -DEXPECTED3=${_LE_DEMO_BUILD}/licenses/boost-asio/LICENSE.txt
         -DEXPECTED4=${_LE_DEMO_BUILD}/spdx/myapp.spdx.json
         -DEXPECTED5=${_LE_DEMO_BUILD}/spdx/myapp.spdx.xml
         -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_exists.cmake")
@@ -56,9 +56,9 @@ set_tests_properties(license_embed.check_build_tree PROPERTIES
 # Check install tree.
 add_test(NAME license_embed.check_install_tree
     COMMAND ${CMAKE_COMMAND}
-        -DEXPECTED=${_LE_DEMO_STAGE}/share/licenses/zlib/LICENSE
-        -DEXPECTED2=${_LE_DEMO_STAGE}/share/licenses/fmt/LICENSE
-        -DEXPECTED3=${_LE_DEMO_STAGE}/share/licenses/boost-asio/LICENSE
+        -DEXPECTED=${_LE_DEMO_STAGE}/share/licenses/zlib/LICENSE.txt
+        -DEXPECTED2=${_LE_DEMO_STAGE}/share/licenses/fmt/LICENSE.txt
+        -DEXPECTED3=${_LE_DEMO_STAGE}/share/licenses/boost-asio/LICENSE.txt
         -DEXPECTED4=${_LE_DEMO_STAGE}/share/spdx/myapp.spdx.json
         -DEXPECTED5=${_LE_DEMO_STAGE}/share/spdx/myapp.spdx.xml
         -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_exists.cmake")
@@ -136,9 +136,9 @@ add_test(NAME license_embed.copy_now.configure
 
 add_test(NAME license_embed.copy_now.check_no_build_needed
     COMMAND ${CMAKE_COMMAND}
-        -DEXPECTED=${_LE_COPY_NOW_BUILD}/licenses/zlib/LICENSE
-        -DEXPECTED2=${_LE_COPY_NOW_BUILD}/licenses/fmt/LICENSE
-        -DEXPECTED3=${_LE_COPY_NOW_BUILD}/licenses/boost-asio/LICENSE
+        -DEXPECTED=${_LE_COPY_NOW_BUILD}/licenses/zlib/LICENSE.txt
+        -DEXPECTED2=${_LE_COPY_NOW_BUILD}/licenses/fmt/LICENSE.txt
+        -DEXPECTED3=${_LE_COPY_NOW_BUILD}/licenses/boost-asio/LICENSE.txt
         -DEXPECTED4=${_LE_COPY_NOW_BUILD}/spdx/myapp.spdx.json
         -DEXPECTED5=${_LE_COPY_NOW_BUILD}/spdx/myapp.spdx.xml
         -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_exists.cmake")
@@ -166,9 +166,9 @@ _le_scenario(custom-dir
 
 add_test(NAME license_embed.custom_build_dir.check
     COMMAND ${CMAKE_COMMAND}
-        -DEXPECTED=${_LE_CUSTOM_DIR}/zlib/LICENSE
-        -DEXPECTED2=${_LE_CUSTOM_DIR}/fmt/LICENSE
-        -DEXPECTED3=${_LE_CUSTOM_DIR}/boost-asio/LICENSE
+        -DEXPECTED=${_LE_CUSTOM_DIR}/zlib/LICENSE.txt
+        -DEXPECTED2=${_LE_CUSTOM_DIR}/fmt/LICENSE.txt
+        -DEXPECTED3=${_LE_CUSTOM_DIR}/boost-asio/LICENSE.txt
         -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_exists.cmake")
 set_tests_properties(license_embed.custom_build_dir.check PROPERTIES
     DEPENDS license_embed.custom-dir.build)
@@ -184,9 +184,9 @@ add_test(NAME license_embed.android.configure
 
 add_test(NAME license_embed.android.check
     COMMAND ${CMAKE_COMMAND}
-        -DEXPECTED=${_LE_ANDROID_BUILD}/assets/license/zlib/LICENSE
-        -DEXPECTED2=${_LE_ANDROID_BUILD}/assets/license/fmt/LICENSE
-        -DEXPECTED3=${_LE_ANDROID_BUILD}/assets/license/boost-asio/LICENSE
+        -DEXPECTED=${_LE_ANDROID_BUILD}/assets/license/zlib/LICENSE.txt
+        -DEXPECTED2=${_LE_ANDROID_BUILD}/assets/license/fmt/LICENSE.txt
+        -DEXPECTED3=${_LE_ANDROID_BUILD}/assets/license/boost-asio/LICENSE.txt
         -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_exists.cmake")
 set_tests_properties(license_embed.android.check PROPERTIES
     DEPENDS license_embed.android.configure)
@@ -197,7 +197,7 @@ add_test(NAME license_embed.android_off.configure
 
 add_test(NAME license_embed.android_off.check_absent
     COMMAND ${CMAKE_COMMAND}
-        -DEXPECTED=${_LE_ANDROID_OFF_BUILD}/assets/license/zlib/LICENSE
+        -DEXPECTED=${_LE_ANDROID_OFF_BUILD}/assets/license/zlib/LICENSE.txt
         -P "${CMAKE_CURRENT_SOURCE_DIR}/assert_not_exists.cmake")
 set_tests_properties(license_embed.android_off.check_absent PROPERTIES
     DEPENDS license_embed.android_off.configure)

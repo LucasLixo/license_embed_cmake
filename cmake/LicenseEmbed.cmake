@@ -203,7 +203,7 @@ macro(license_embed_enable_install)
         list(GET _parts 2 _path)
         install(FILES "${_path}"
             DESTINATION "${LICENSE_EMBED_INSTALL_LICENSES_DIR}/${_name}"
-            RENAME LICENSE
+            RENAME LICENSE.txt
             COMPONENT ${LICENSE_EMBED_INSTALL_COMPONENT})
     endforeach()
 
@@ -241,7 +241,7 @@ macro(license_embed_enable_build)
         string(REPLACE "|" ";" _parts "${_row}")
         list(GET _parts 0 _name)
         list(GET _parts 2 _path)
-        set(_out "${LICENSE_EMBED_BUILD_LICENSES_DIR}/${_name}/LICENSE")
+        set(_out "${LICENSE_EMBED_BUILD_LICENSES_DIR}/${_name}/LICENSE.txt")
         add_custom_command(
             OUTPUT  "${_out}"
             COMMAND ${CMAKE_COMMAND} -E make_directory
@@ -289,7 +289,7 @@ macro(license_embed_enable_copy_now)
         list(GET _parts 2 _path)
         set(_dest_dir "${LICENSE_EMBED_BUILD_LICENSES_DIR}/${_name}")
         file(MAKE_DIRECTORY "${_dest_dir}")
-        configure_file("${_path}" "${_dest_dir}/LICENSE" COPYONLY)
+        configure_file("${_path}" "${_dest_dir}/LICENSE.txt" COPYONLY)
     endforeach()
 
     get_property(_le_spdx_on GLOBAL PROPERTY LICENSE_EMBED_SPDX_ENABLED)
@@ -367,7 +367,7 @@ macro(license_embed_enable_android)
             list(GET _parts 2 _path)
             set(_dest_dir "${LICENSE_EMBED_ANDROID_ASSETS_DIR}/${_name}")
             file(MAKE_DIRECTORY "${_dest_dir}")
-            configure_file("${_path}" "${_dest_dir}/LICENSE" COPYONLY)
+            configure_file("${_path}" "${_dest_dir}/LICENSE.txt" COPYONLY)
         endforeach()
         set_property(GLOBAL PROPERTY LICENSE_EMBED_ANDROID_ENABLED TRUE)
     endif()
@@ -401,7 +401,7 @@ function(license_embed_get_destinations OUT_VAR)
     foreach(_row IN LISTS _le_entries)
         string(REPLACE "|" ";" _parts "${_row}")
         list(GET _parts 0 _name)
-        list(APPEND _result "${_base}/${_name}/LICENSE")
+        list(APPEND _result "${_base}/${_name}/LICENSE.txt")
     endforeach()
     set(${OUT_VAR} "${_result}" PARENT_SCOPE)
 endfunction()
